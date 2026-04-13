@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pendaftaran Poliklinik Online</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-hospital"></i>
+                <h1>RSUD Sehat Selalu</h1>
+            </div>
+            <div class="header-info">
+                <span><i class="fas fa-clock"></i> Buka 24 Jam</span>
+                <span><i class="fas fa-phone"></i> 0812-3456-7890</span>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Form Pendaftaran -->
+            <div class="form-container" id="formContainer">
+                <div class="form-header">
+                    <h2><i class="fas fa-user-plus"></i> Pendaftaran Poliklinik</h2>
+                </div>
+                
+                <form id="registrationForm" class="registration-form">
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Nama Lengkap *</label>
+                        <input type="text" id="nama" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-id-card"></i> No. KTP *</label>
+                            <input type="text" id="ktp" maxlength="16" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-calendar"></i> Tanggal Lahir *</label>
+                            <input type="date" id="tglLahir" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-venus-mars"></i> Jenis Kelamin *</label>
+                            <select id="jenisKelamin" required>
+                                <option value="">Pilih...</option>
+                                <option value="Laki-laki">Laki-laki</option>
+                                <option value="Perempuan">Perempuan</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-phone"></i> No. Telepon *</label>
+                            <input type="tel" id="telepon" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-stethoscope"></i> Poliklinik Tujuan *</label>
+                        <select id="poli" required>
+                            <option value="">Pilih Poliklinik...</option>
+                            <option value="Umum">Poli Umum</option>
+                            <option value="KIA">Poli KIA</option>
+                            <option value="Gigi">Poli Gigi</option>
+                            <option value="Kebidanan">Poli Kebidanan</option>
+                            <option value="Bedah">Poli Bedah</option>
+                            <option value="Mata">Poli Mata</option>
+                            <option value="THT">Poli THT</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-calendar-day"></i> Tanggal Kunjungan *</label>
+                            <input type="date" id="tanggalKunjungan" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-clock"></i> Jam Kunjungan *</label>
+                            <select id="jamKunjungan" required>
+                                <option value="">Pilih Jam...</option>
+                                <option value="08:00">08:00 - 09:00</option>
+                                <option value="09:00">09:00 - 10:00</option>
+                                <option value="10:00">10:00 - 11:00</option>
+                                <option value="13:00">13:00 - 14:00</option>
+                                <option value="14:00">14:00 - 15:00</option>
+                                <option value="15:00">15:00 - 16:00</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-notes-medical"></i> Keluhan Utama</label>
+                        <textarea id="keluhan" rows="3" placeholder="Jelaskan keluhan Anda..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-paper-plane"></i> Daftar Sekarang
+                    </button>
+                </form>
+            </div>
+
+            <!-- Daftar Antrian -->
+            <div class="queue-container" id="queueContainer" style="display: none;">
+                <div class="queue-header">
+                    <h2><i class="fas fa-list"></i> Antrian Aktif</h2>
+                </div>
+                <div id="queueList"></div>
+            </div>
+        </main>
+
+        <!-- Success Modal -->
+        <div id="successModal" class="modal">
+            <div class="modal-content">
+                <i class="fas fa-check-circle success-icon"></i>
+                <h3>Pendaftaran Berhasil!</h3>
+                <div id="modalInfo"></div>
+                <button id="printBtn" class="btn-print">Cetak Bukti</button>
+                <button id="closeModal" class="btn-close">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.header {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo i {
+    font-size: 2.5rem;
+    color: #667eea;
+}
+
+.logo h1 {
+    color: #333;
+    font-size: 1.8rem;
+}
+
+.header-info span {
+    display: block;
+    margin: 5px 0;
+    color: #666;
+}
+
+.form-container {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.form-header h2 {
+    color: #333;
+    font-size: 1.8rem;
+}
+
+.form-header i {
+    color: #667eea;
+    margin-right: 10px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+}
+
+.form-group label i {
+    color: #667eea;
+    margin-right: 8px;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e1e5e9;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.btn-submit {
+    width: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.btn-submit:hover {
+    transform: translateY(-2px);
+}
+
+.btn-submit i {
+    margin-right: 10px;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.success-icon {
+    font-size: 4rem;
+    color: #4CAF50;
+    margin-bottom: 20px;
+}
+
+.modal-content h3 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+#modalInfo {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    text-align: left;
+}
+
+.btn-print, .btn-close {
+    padding: 12px 30px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-print {
+    background: #2196F3;
+    color: white;
+}
+
+.btn-close {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-print:hover, .btn-close:hover {
+    transform: translateY(-2px);
+}
+
+/* Queue Container */
+.queue-container {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    margin-top: 30px;
+}
+
+.queue-item {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    border-left: 5px solid #667eea;
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .header {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+}
+class PoliRegistration {
+    constructor() {
+        this.patients = JSON.parse(localStorage.getItem('patients')) || [];
+        this.init();
+    }
+
+    init() {
+        this.form = document.getElementById('registrationForm');
+        this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+        
+        // Set min date to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('tanggalKunjungan').min = today;
+        
+        this.modal = document.getElementById('successModal');
+        document.getElementById('closeModal').addEventListener('click', () => this.closeModal());
+        document.getElementById('printBtn').addEventListener('click', () => this.printReceipt());
+        
+        this.loadQueue();
+    }
+
+    handleSubmit(e) {
+        e.preventDefault();
+        
+        const formData = {
+            id: Date.now(),
+            nama: document.getElementById('nama').value,
+            ktp: document.getElementById('ktp').value,
+            tglLahir: document.getElementById('tglLahir').value,
+            jenisKelamin: document.getElementById('jenisKelamin').value,
+            telepon: document.getElementById('telepon').value,
+            poli: document.getElementById('poli').value,
+            tanggalKunjungan: document.getElementById('tanggalKunjungan').value,
+            jamKunjungan: document.getElementById('jamKunjungan').value,
+            keluhan: document.getElementById('keluhan').value || 'Tidak ada keluhan khusus',
+            nomorAntrian: this.generateQueueNumber(),
+            tanggalDaftar: new Date().toLocaleString('id-ID')
+        };
+
+        this.patients.push(formData);
+        localStorage.setItem('patients', JSON.stringify(this.patients));
+        
+        this.showModal(formData);
+        this.form.reset();
+        this.loadQueue();
+    }
+
+    generateQueueNumber() {
+        const today = new Date().toISOString().split('T')[0];
+        const todayPatients = this.patients.filter(p => p.tanggalKunjungan === today);
+        return `A${String(todayPatients.length + 1).padStart(3, '0')}`;
+    }
+
+    showModal(data) {
+        document.getElementById('modalInfo').innerHTML = `
+            <p><strong>No. Antrian:</strong> ${data.nomorAntrian}</p>
+            <p><strong>Nama:</strong> ${data.nama}</p>
+            <p><strong>Poliklinik:</strong> ${data.poli}</p>
+            <p><strong>Tanggal:</strong> ${data.tanggalKunjungan}</p>
+            <p><strong>Jam:</strong> ${data.jamKunjungan}</p>
+            <p><strong>Telepon:</strong> ${data.telepon}</p>
+        `;
+        this.modal.style.display = 'block';
+    }
+
+    closeModal() {
+        this.modal.style.display = 'none';
+    }
+
+    printReceipt() {
+        const printContent = document.getElementById('modalInfo').innerHTML;
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+            <html>
+                <head><title>Bukti Pendaftaran</title></head>
+                <body style="font-family: Arial; padding: 20px;">
+                    <h2 style="text-align: center; color: #333;">BUKTI PENDAFTARAN</h2>
+                    <div style="background: #f0f0f0; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                        ${printContent.replace(/<[^>]*>/g, '')}
+                    </div>
+                    <p style="text-align: center; margin-top: 30px;">Terima kasih telah mendaftar<br>
+                    Simpan bukti ini untuk keperluan antrian</p>
+                </body>
+            </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+    }
+
+    loadQueue() {
+        const queueContainer = document.getElementById('queueContainer');
+        const queueList = document.getElementById('queueList');
+        
+        const today = new Date().toISOString().split('T')[0];
+        const todayQueue = this.patients.filter(p => p.tanggalKunjungan === today)
+            .sort((a, b) => a.id - b.id);
+        
+        if (todayQueue.length > 0) {
+            queueList.innerHTML = todayQueue.map(patient => `
+                <div class="queue-item">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong>${patient.nomorAntrian}</strong> - ${patient.nama}
+                            <br><small>${patient.poli} | ${patient.jamKunjungan}</small>
+                        </div>
+                        <span style="font-size: 1.2rem; color: #667eea;">${todayQueue.indexOf(patient) + 1}</span>
+                    </div>
+                </div>
+            `).join('');
+            queueContainer.style.display = 'block';
+        } else {
+            queueContainer.style.display = 'none';
+        }
+    }
+}
+
+// Initialize app
+document.addEventListener('DOMContentLoaded', () => {
+    new PoliRegistration();
+});
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('successModal');
+    if (event.target === modal) {
+        modal.style.display = 'none';
+    }
+}
